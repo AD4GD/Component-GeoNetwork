@@ -120,6 +120,36 @@ That can be seen in XML linke this:
 ```
 In this case the trick of the gmx:anchor is not necessary becuase there is a linkage element available.
 
+## Adding the schema of the data
+Adding the application schema language for the data can also be done by linking the citation title with an anchor. Unfortunately the title is not shown in the Geonetwork visualization interface for some unknown reason, so we had to add an alternative title with the same information. The purpose of the schema information is to validate the distribution info. In this case, we use use one of the attached files as a URL instead of an external resource. Note that you can add attached resources but do not have them as associated resources to avoid having them visible in the distribution info.
+
+```
+<gmd:applicationSchemaInfo>
+      <gmd:MD_ApplicationSchemaInformation>
+         <gmd:name>
+            <gmd:CI_Citation>
+               <gmd:title>
+                  <gmx:Anchor xlink:href="https://catalogue.grumets.cat/geonetwork/ad4gd/api/records/63a296c5-f132-4174-bac5-babe5ad94f2a/attachments/GBIF_Mammals_ANSI_csvw.txt">Mammals occurrences GBIF test schema</gmx:Anchor>
+               </gmd:title>
+               <gmd:alternateTitle>
+                  <gmx:Anchor xlink:href="https://catalogue.grumets.cat/geonetwork/ad4gd/api/records/63a296c5-f132-4174-bac5-babe5ad94f2a/attachments/GBIF_Mammals_ANSI_csvw.txt">Mammals occurrences GBIF test schema</gmx:Anchor>
+               </gmd:alternateTitle>
+               <gmd:date>
+                  <gmd:CI_Date/>
+            </gmd:CI_Citation>
+         </gmd:name>
+         <gmd:schemaLanguage>
+            <gco:CharacterString>JSON</gco:CharacterString>
+         </gmd:schemaLanguage>
+         <gmd:constraintLanguage>
+            <gco:CharacterString>CSVW</gco:CharacterString>
+         </gmd:constraintLanguage>
+      </gmd:MD_ApplicationSchemaInformation>
+  </gmd:applicationSchemaInfo>
+```
+This is how it is presented in the user interface.
+![image](https://github.com/user-attachments/assets/664c8c28-5950-42d9-82e0-919f8ff11cc4)
+
 ## Common issues
 One of the most common issues in Geonetwork is the leftovers due to empty elements left in the GUI
 
