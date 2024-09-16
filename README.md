@@ -81,6 +81,10 @@ In ISO 19115:2003 there is no easy way to associate a URI to a term. It is possi
 This is the visual result (as you can see text become links that can be "cliked":
 ![image](https://github.com/user-attachments/assets/8180f5be-0f58-493f-9954-bfd8801f692e)
 
+This practice may seem very peculiar, but in fact it is also used by the EEA catalogue as it can be seen here:
+
+https://sdi.eea.europa.eu/catalogue/srv/cat/csw?REQUEST=GetRecordById&SERVICE=CSW&version=2.0.2&typeNames=gmd:MD_Metadata&namespace=xmlns(gmd=http://www.isotc211.org/2005/gmd)&outputSchema=http://www.isotc211.org/2005/gmd&maxRecords=100&elementSetName=full&id=e4fcc5da-e51f-4b66-a9b0-78da0cfd9a15
+
 ## Linking to documents stored in the Geonetwork as attachments
 Adding a attached file to a metadata record is easy. The process starts by associating resources:
 ![image](https://github.com/user-attachments/assets/3c831a1a-e1b6-4dac-8ffe-eebff7588e1b)
@@ -172,5 +176,4 @@ Unfortunately, removed elements are the difficult to recover in the GUI.
 
 ## Known issues
 * The JSON as base64: https://github.com/geonetwork/core-geonetwork/issues/8343#issuecomment-2328020366
-
-
+* Title of the citations is not shown in the full view mode: https://github.com/geonetwork/core-geonetwork/issues/8370
