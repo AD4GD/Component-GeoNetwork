@@ -165,11 +165,11 @@ This is how it is presented in the user interface.
 
 ## Defining a datacube
 The definition of a datacube requires at least 3 things (this respects the xarray and the CIS model)
-* Dimensions (called coordinates in xarray)
-* Bands (called data variables in xarray)
-* Other metadata (called attributes in xarray)
+* Dimensions (called coordinates in xarray and domainSet in CIS)
+* Bands (called data variables in xarray and rangeType in CIS)
+* Other metadata (called attributes in xarray and metadata in CIS)
 
-Lets imagine that we are describing this datacube (Expressed as an xarray in ODC)
+Lets imagine that we what to describe this datacube using ISO 19115 (here we see it expressed as an python xarray in ODC)
 
 ```
 <xarray.Dataset>
@@ -191,7 +191,7 @@ Attributes:
 ```
 
 ### Declaring a datacube
-This the way we declare that the data is a "datacube". 
+This the way we declare that the data is a "datacube". We beleive that "datacube" is an aggregation of "layers" and "files" so in some sense is a upper hierachycal level.
 ```
    <gmd:hierarchyLevelName>
       <gco:CharacterString>Datacube</gco:CharacterString>
@@ -199,9 +199,11 @@ This the way we declare that the data is a "datacube".
 ```
 
 ### Dimensions
-The dimensions 
+The dimensions are described in the statial representation. 
 
 ![image](https://github.com/user-attachments/assets/354ca856-74e1-4f5a-a979-c44dd7e4e6a2)
+
+In our case, this is a georectified grid with 3 dimensions: x, y and time. The names of the dimensions are codified in ISO as collumn, row and time respectively. To fully define the grid, we need to split the defintion in two parts. In the spatial representation we can define the periodicity of the grid and in the extent we can define the actual positions.
 
 ```
     <gmd:spatialRepresentationInfo>
@@ -216,7 +218,7 @@ The dimensions
                                                 codeListValue="row"/>
                </gmd:dimensionName>
                <gmd:dimensionSize>
-                  <gco:Integer>665</gco:Integer>
+                  <gco:Integer>668</gco:Integer>
                </gmd:dimensionSize>
                <gmd:resolution>
                   <gco:Length uom="m">390</gco:Length>
@@ -230,7 +232,7 @@ The dimensions
                                                 codeListValue="column"/>
                </gmd:dimensionName>
                <gmd:dimensionSize>
-                  <gco:Integer>686</gco:Integer>
+                  <gco:Integer>688</gco:Integer>
                </gmd:dimensionSize>
                <gmd:resolution>
                   <gco:Length uom="m">390</gco:Length>
@@ -255,12 +257,6 @@ The dimensions
             <gmd:MD_CellGeometryCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_CellGeometryCode"
                                      codeListValue="area"/>
          </gmd:cellGeometry>
-         <gmd:transformationParameterAvailability>
-            <gco:Boolean>true</gco:Boolean>
-         </gmd:transformationParameterAvailability>
-         <gmd:checkPointAvailability>
-            <gco:Boolean>false</gco:Boolean>
-         </gmd:checkPointAvailability>
          <gmd:cornerPoints>
             <gml:Point gml:id="NW_corner">
                <gml:pos>260280 4747860</gml:pos>
@@ -277,8 +273,66 @@ The dimensions
       </gmd:MD_Georectified>
    </gmd:spatialRepresentationInfo>
 ```
+The actual ranges of values of the dimensions are present in the extent. The temporal extent can be defined as a list of time instances or as a time interval. The Geonetwork view does not present the time instants in the view mode so we go for the interval. We are also forced to duplicate the bbox in WGS84 lat/long and in the crs of the dataset.
+
+![image](https://github.com/user-attachments/assets/f62bdfe6-9d3e-4a84-b062-3e1f26a44a0b)
+
+```
+          <gmd:extent>
+            <gmd:EX_Extent>
+               <gmd:geographicElement>
+                  <gmd:EX_GeographicBoundingBox>
+                     <gmd:extentTypeCode>
+                        <gco:Boolean>true</gco:Boolean>
+                     </gmd:extentTypeCode>
+                     <gmd:westBoundLongitude>
+                        <gco:Decimal>0.0639119375078333</gco:Decimal>
+                     </gmd:westBoundLongitude>
+                     <gmd:eastBoundLongitude>
+                        <gco:Decimal>3.33828975521333</gco:Decimal>
+                     </gmd:eastBoundLongitude>
+                     <gmd:southBoundLatitude>
+                        <gco:Decimal>40.5143870238267</gco:Decimal>
+                     </gmd:southBoundLatitude>
+                     <gmd:northBoundLatitude>
+                        <gco:Decimal>42.8845959400033</gco:Decimal>
+                     </gmd:northBoundLatitude>
+                  </gmd:EX_GeographicBoundingBox>
+               </gmd:geographicElement>
+               <gmd:geographicElement>
+                  <gmd:EX_BoundingPolygon>
+                     <gmd:polygon>
+                        <gml:MultiSurface gml:id="d1017385e573" srsName="EPSG:25831">
+                           <gml:surfaceMember>
+                              <gml:Polygon gml:id="d1017385e575" srsName="EPSG:25831">
+                                 <gml:exterior>
+                                    <gml:LinearRing>
+                                       <gml:posList srsDimension="2">260085 4488705 527625 4488705 527625 4748055 260085 4748055 260085 4488705</gml:posList>
+                                    </gml:LinearRing>
+                                 </gml:exterior>
+                              </gml:Polygon>
+                           </gml:surfaceMember>
+                        </gml:MultiSurface>
+                     </gmd:polygon>
+                  </gmd:EX_BoundingPolygon>
+               </gmd:geographicElement>
+               <gmd:temporalElement>
+                  <gmd:EX_TemporalExtent>
+                     <gmd:extent>
+                        <gml:TimePeriod gml:id="d993013e629">
+                           <gml:beginPosition>1987-01-01</gml:beginPosition>
+                           <gml:endPosition>2017-01-01</gml:endPosition>
+                        </gml:TimePeriod>
+                     </gmd:extent>
+                  </gmd:EX_TemporalExtent>
+               </gmd:temporalElement>
+            </gmd:EX_Extent>
+         </gmd:extent>
+```
 
 ### Bands
+The bands are described in the content information. For each band we can describe the band name, the data type and the range of values.
+
 ![image](https://github.com/user-attachments/assets/4212a9b8-d6b9-4575-b35d-dc72f05178fd)
 
 ```
