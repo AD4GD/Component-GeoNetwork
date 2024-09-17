@@ -5,6 +5,15 @@ Information about the data catalogue of the project. This is GeoNetwork
 
 We decided to use the ISO 19115:2003. It is by far the most used version. While 19115-1 has been arroud for years, there aren't much implementations outthere.
 
+**Table of content**
+1. [How to get the metadata records using CSW](#how-to-get-the-metadata-records-using-csw)
+2. [Linked data trick. How to add URL/URI to some places that are not prepared for that](#linked-data-trick-how-to-add-urluri-to-some-places-that-are-not-prepared-for-that)
+3. [Linking to documents stored in the Geonetwork as attachments](#linking-to-documents-stored-in-the-geonetwork-as-attachments)
+4. [Adding the schema of the data](#adding-the-schema-of-the-data)
+5. [Defining a datacube](#defining-a-datacube)
+6. [Common issues](#common-issues)
+7. [Known issues](#known-issues)
+
 ## How to get the metadata records using CSW
 
 * As ISO19115:2003: https://catalogue.grumets.cat/geonetwork/ad4gd/cat/csw?REQUEST=GetRecords&SERVICE=CSW&version=2.0.2&resultType=results&typeNames=gmd:MD_Metadata&namespace=xmlns(gmd=http://www.isotc211.org/2005/gmd)&outputSchema=http://www.isotc211.org/2005/gmd&maxRecords=100&elementSetName=full
@@ -153,6 +162,186 @@ Adding the application schema language for the data can also be done by linking 
 ```
 This is how it is presented in the user interface.
 ![image](https://github.com/user-attachments/assets/664c8c28-5950-42d9-82e0-919f8ff11cc4)
+
+## Defining a datacube
+The definition of a datacube requires at least 3 things (this respects the xarray and the CIS model)
+* Dimensions (called coordinates in xarray)
+* Bands (called data variables in xarray)
+* Other metadata (called attributes in xarray)
+
+Lets imagine that we are describing this datacube (Expressed as an xarray in ODC)
+
+```
+<xarray.Dataset>
+Dimensions:          (time: 7, y: 668, x: 688)
+Coordinates:
+  * time             (time) datetime64[ns] 1987-01-01 1992-01-01 ... 2017-01-01
+  * y                (y) float64 4.488e+06 4.488e+06 ... 4.748e+06 4.748e+06
+  * x                (x) float64 2.599e+05 2.603e+05 ... 5.275e+05 5.279e+05
+    spatial_ref      int32 32631
+Data variables:
+    Aquatic          (time, y, x) float32 -9.999e+03 -9.999e+03 ... -9.999e+03
+    Forest           (time, y, x) float32 -9.999e+03 -9.999e+03 ... -9.999e+03
+    HerbaceousCrops  (time, y, x) float32 -9.999e+03 -9.999e+03 ... -9.999e+03
+    WoodyCrops       (time, y, x) float32 -9.999e+03 -9.999e+03 ... -9.999e+03
+    Shrublands       (time, y, x) float32 -9.999e+03 -9.999e+03 ... -9.999e+03
+Attributes:
+    crs:           EPSG:32631
+    grid_mapping:  spatial_ref
+```
+
+### Declaring a datacube
+This the way we declare that the data is a "datacube". 
+```
+   <gmd:hierarchyLevelName>
+      <gco:CharacterString>Datacube</gco:CharacterString>
+   </gmd:hierarchyLevelName>
+```
+
+### Dimensions
+The dimensions 
+
+![image](https://github.com/user-attachments/assets/354ca856-74e1-4f5a-a979-c44dd7e4e6a2)
+
+```
+    <gmd:spatialRepresentationInfo>
+      <gmd:MD_Georectified>
+         <gmd:numberOfDimensions>
+            <gco:Integer>3</gco:Integer>
+         </gmd:numberOfDimensions>
+         <gmd:axisDimensionProperties>
+            <gmd:MD_Dimension>
+               <gmd:dimensionName>
+                  <gmd:MD_DimensionNameTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_DimensionNameTypeCode"
+                                                codeListValue="row"/>
+               </gmd:dimensionName>
+               <gmd:dimensionSize>
+                  <gco:Integer>665</gco:Integer>
+               </gmd:dimensionSize>
+               <gmd:resolution>
+                  <gco:Length uom="m">390</gco:Length>
+               </gmd:resolution>
+            </gmd:MD_Dimension>
+         </gmd:axisDimensionProperties>
+         <gmd:axisDimensionProperties>
+            <gmd:MD_Dimension>
+               <gmd:dimensionName>
+                  <gmd:MD_DimensionNameTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_DimensionNameTypeCode"
+                                                codeListValue="column"/>
+               </gmd:dimensionName>
+               <gmd:dimensionSize>
+                  <gco:Integer>686</gco:Integer>
+               </gmd:dimensionSize>
+               <gmd:resolution>
+                  <gco:Length uom="m">390</gco:Length>
+               </gmd:resolution>
+            </gmd:MD_Dimension>
+         </gmd:axisDimensionProperties>
+         <gmd:axisDimensionProperties>
+            <gmd:MD_Dimension>
+               <gmd:dimensionName>
+                  <gmd:MD_DimensionNameTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_DimensionNameTypeCode"
+                                                codeListValue="time"/>
+               </gmd:dimensionName>
+               <gmd:dimensionSize>
+                  <gco:Integer>7</gco:Integer>
+               </gmd:dimensionSize>
+               <gmd:resolution>
+                  <gco:Distance uom="years">5</gco:Distance>
+               </gmd:resolution>
+            </gmd:MD_Dimension>
+         </gmd:axisDimensionProperties>
+         <gmd:cellGeometry>
+            <gmd:MD_CellGeometryCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_CellGeometryCode"
+                                     codeListValue="area"/>
+         </gmd:cellGeometry>
+         <gmd:transformationParameterAvailability>
+            <gco:Boolean>true</gco:Boolean>
+         </gmd:transformationParameterAvailability>
+         <gmd:checkPointAvailability>
+            <gco:Boolean>false</gco:Boolean>
+         </gmd:checkPointAvailability>
+         <gmd:cornerPoints>
+            <gml:Point gml:id="NW_corner">
+               <gml:pos>260280 4747860</gml:pos>
+            </gml:Point>
+         </gmd:cornerPoints>
+         <gmd:cornerPoints>
+            <gml:Point gml:id="SE_corner">
+               <gml:pos>527430 4488900</gml:pos>
+            </gml:Point>
+         </gmd:cornerPoints>
+         <gmd:pointInPixel>
+            <gmd:MD_PixelOrientationCode>center</gmd:MD_PixelOrientationCode>
+         </gmd:pointInPixel>
+      </gmd:MD_Georectified>
+   </gmd:spatialRepresentationInfo>
+```
+
+### Bands
+![image](https://github.com/user-attachments/assets/4212a9b8-d6b9-4575-b35d-dc72f05178fd)
+
+```
+      <gmd:contentInfo>
+      <gmd:MD_CoverageDescription>
+         <gmd:attributeDescription>
+            <gco:RecordType>Terrestrial Connectivity Index</gco:RecordType>
+         </gmd:attributeDescription>
+         <gmd:contentType>
+            <gmd:MD_CoverageContentTypeCode codeList="http://standards.iso.org/iso/19139/resources/gmxCodelists.xml#MD_CoverageContentTypeCode"
+                                            codeListValue="image"/>
+         </gmd:contentType>
+         <gmd:dimension/>
+         <gmd:dimension>
+            <gmd:MD_Band>
+               <gmd:sequenceIdentifier>
+                  <gco:MemberName>
+                     <gco:aName>
+                        <gco:CharacterString>Aquatic</gco:CharacterString>
+                     </gco:aName>
+                     <gco:attributeType>
+                        <gco:TypeName>
+                           <gco:aName>
+                              <gco:CharacterString>FLOAT</gco:CharacterString>
+                           </gco:aName>
+                        </gco:TypeName>
+                     </gco:attributeType>
+                  </gco:MemberName>
+               </gmd:sequenceIdentifier>
+               <gmd:descriptor>
+                  <gco:CharacterString>Aquatic habitat</gco:CharacterString>
+               </gmd:descriptor>
+               <gmd:maxValue>
+                  <gco:Real>3</gco:Real>
+               </gmd:maxValue>
+               <gmd:minValue>
+                  <gco:Real>0</gco:Real>
+               </gmd:minValue>
+            </gmd:MD_Band>
+         </gmd:dimension>
+         <gmd:dimension>
+            <gmd:MD_Band>
+               <gmd:sequenceIdentifier>
+                  <gco:MemberName>
+                     <gco:aName>
+                        <gco:CharacterString>Forest</gco:CharacterString>
+                     </gco:aName>
+                     <gco:attributeType>
+                        <gco:TypeName>
+                           <gco:aName>
+                              <gco:CharacterString>FLOAT</gco:CharacterString>
+                           </gco:aName>
+                        </gco:TypeName>
+                     </gco:attributeType>
+                  </gco:MemberName>
+               </gmd:sequenceIdentifier>
+               <gmd:descriptor>
+                  <gco:CharacterString>Forest habitat</gco:CharacterString>
+               </gmd:descriptor>
+...
+   </gmd:contentInfo>
+```
+
 
 ## Common issues
 One of the most common issues in Geonetwork is the leftovers due to empty elements left in the GUI
