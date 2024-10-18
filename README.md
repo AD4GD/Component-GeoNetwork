@@ -11,8 +11,9 @@ We decided to use the ISO 19115:2003. It is by far the most used version. While 
 3. [Linking to documents stored in the Geonetwork as attachments](#linking-to-documents-stored-in-the-geonetwork-as-attachments)
 4. [Adding the schema of the data](#adding-the-schema-of-the-data)
 5. [Defining a datacube](#defining-a-datacube)
-6. [Common issues](#common-issues)
-7. [Known issues](#known-issues)
+6. [Templates](templates.md)
+7. [Common issues](#common-issues)
+8. [Known issues](#known-issues)
 
 ## How to get the metadata records using CSW
 
@@ -398,6 +399,8 @@ The bands are described in the content information. For each band we can describ
 
 
 ## Common issues
+
+### Leftovers that may generate validation errors
 One of the most common issues in Geonetwork is the leftovers due to empty elements left in the GUI
 
 Example:
@@ -416,6 +419,22 @@ This will result in an empty element marked with `gco:nilReason="missing"`.
 As we can see in the image this element is optional and could be removed from the final XML document.
 ![image](https://github.com/user-attachments/assets/0a4180ca-be88-4ce9-ad44-e712290b0cf1)
 Unfortunately, removed elements are the difficult to recover in the GUI.
+
+### Create record from a "group".
+We have a issue in creating metadata records when we are in the url of a "group" (https://catalogue.grumets.cat/geonetwork/ad4gd). You have to use the main URL to do so (https://catalogue.grumets.cat/geonetwork) and remember to associate the new record to the write group in the [add record] interface. If you forget to do so, you can always change the group by selecting the record and entering in the edit mode:
+![image](https://github.com/user-attachments/assets/c4d0702a-c1ec-44e3-a34c-76530158f990)
+
+#### Groups and subportals
+There are to different concepts that can be used together but they are different: "groups" and "portals"
+
+Actually "group" is not the name for the URLs and they are called "portals" or "sources"
+![image](https://github.com/user-attachments/assets/19ca3ca2-f221-4825-9a2b-db0d4a6a2b00)
+
+A portal is associate to a group while configuring it using a special filter "+groupPublished":
+![image](https://github.com/user-attachments/assets/b32cf6b6-303c-4a5f-90e0-bec2c8100fd6)
+
+A user can be associeted to different groups to get permissions to act in different roles in the system:
+![image](https://github.com/user-attachments/assets/fb10b4eb-4e04-4dd1-a381-cd125d531c30)
 
 ## Known issues
 * The JSON as base64: https://github.com/geonetwork/core-geonetwork/issues/8343#issuecomment-2328020366
